@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useChuck } from '../hooks/useChuck'
 
 import imgLoading from '../img/loading.gif'
@@ -9,8 +9,26 @@ const ApiChuck = () => {
     const [radio, setRadio] = useState('')
     const [submit, setSubmit] = useState('')
     
+    const [categorias, setCategorias] = useState([])
+    
     const { loading, data } = useChuck(`https://api.chucknorris.io/jokes/random?category=${ encodeURI( submit ) }`)
 
+
+
+    useEffect(()=>{
+        categoria()
+    },[])
+
+    const categoria = async () => {
+
+        const url = 'https://api.chucknorris.io/jokes/categories'
+
+        const resp = await fetch(url)
+        const data = await resp.json()
+
+        setCategorias(data)
+    }
+    
 
 
     const handleCheck = (e) => {
@@ -23,14 +41,10 @@ const ApiChuck = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        setSubmit([radio])
-
-        
+        setSubmit([radio, ...submit])
     }
     
    
-
-
 
     return (
         <div className="container" >
@@ -41,9 +55,14 @@ const ApiChuck = () => {
 
             <div className="overlay-header"></div>
 
+
+
             <div className="container-inf">   
 
+                <div className="container-titulo">
                     <h1 className="titulo">Api Chuck</h1>
+                </div>
+                    
                     
                 {
                     loading 
@@ -61,144 +80,26 @@ const ApiChuck = () => {
                         )
                     }
 
-                    <form onSubmit={ handleSubmit }>
 
-                        <div className="container-btn">
-                            <button>Siguiente</button>
-                        </div>
 
-                        <div className="container-radio">
-                            
-                            <label htmlFor="checked">Animal</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="animal"
-                                onChange={ handleCheck }
-                            />
+                <form onSubmit={ handleSubmit }>
 
-                            <label htmlFor="checked">Career</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="career"
-                                onChange={ handleCheck }
-                            />
+                    <div className="container-categoria">
 
-                            <label htmlFor="checked">Celebrity</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="celebrity"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Dev</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="dev"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Explicit</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="explicit"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Fashion</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="fashion"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Food</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="food"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">History</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="history"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Money</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="money"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Movie</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="movie"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Music</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="music"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Political</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="political"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Religion</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="religion"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Science</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="science"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Sport</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="sport"
-                                onChange={ handleCheck }
-                            />
-
-                            <label htmlFor="checked">Travel</label>
-                            <input 
-                                type="radio"
-                                name="checked" 
-                                value="travel"
-                                onChange={ handleCheck }
-                            />
-
-                        </div>
-                    </form>
+                         <button>Siguiente</button>
+            
+                        <select onChange={ handleCheck } className="categoria">
+                                <option value="">Seleccionar una Categoria</option>
+                                {
+                                    categorias.map( item => (
+                                        <option key={ item }>{ item }</option>
+                                    ))
+                                 }
+                                 
+                        </select>
+                        
+                    </div>
+                </form>
             </div> 
         </div>
         
